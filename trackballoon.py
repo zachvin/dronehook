@@ -3,81 +3,69 @@
 import cv2
 import numpy as np
 
-def nothing(x):
-    pass
+# CONSTANTS
+RED       = np.uint8([[[255,0,0]]])
+RED_HSV   = cv2.cvtColor(RED, cv2.COLOR_BGR2HSV)
+RED_LOWER1 = np.array([0, 100, 20])
+RED_UPPER1 = np.array([10, 255, 255])
+RED_LOWER2 = np.array([160, 100, 20])
+RED_UPPER2 = np.array([180, 255, 255])
 
+# FUNCTIONS
 def get_hsv(event, x, y, flags, param):
-    global ix, iy, show_hsv
+    global ix,iy,show_hsv
 
     if event == cv2.EVENT_LBUTTONDOWN:
-       ix,iy,show_hsv = x,y,True 
-        
+        print('Updating shown HSV')
+        ix,iy,show_hsv = x,y,True
 
-REDLOWER = (0, 100, 100)
-REDUPPER = (20, 255, 255)
-h = 0
-s = 100
-v = 100
+cv2.namedWindow('frame')
+cv2.setMouseCallback('frame', get_hsv)
 
-ix,iy,show_hsv = 0, 0, False
-tar_h, tar_s, tar_v = 0, 0, 0
+# start up camera
+cap = cv2.VideoCapture(0)
 
-cam = cv2.VideoCapture(0)
-
-cv2.namedWindow('mask')
-cv2.namedWindow('blurred')
-
-cv2.setMouseCallback('blurred', get_hsv)
-
-cv2.createTrackbar('H', 'mask', 0, 20, nothing)
-cv2.createTrackbar('S (amt. of white)', 'mask', 0, 100, nothing)
-cv2.createTrackbar('V (amt. of black)', 'mask', 0, 100, nothing)
-
-frames = 0
+ix,iy,show_hsv = 0,0,False
+tar_h,tar_s,tar_v = 0,0,0
 while True:
     
-    # get frame
-    frames += 1
-    ret,frame = cam.read()
+    # convert image to HSV and give strong blur
+    ret,frame = cap.read()
+    frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    frame_hsv = cv2.GaussianBlur(frame_hsv, (11,11), 5)
 
-    if frame is None:
-        continue
+    # make red mask with HSV range
+    lower_mask = cv2.inRange(frame_hsv, RED_LOWER1, RED_UPPER1)
+    upper_mask = cv2.inRange(frame_hsv, RED_LOWER2, RED_UPPER2)
 
-    # prep image
-    blurred = cv2.GaussianBlur(frame, (11, 11), 0)
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = lower_mask + upper_mask
 
+    # compute final image
+    res = cv2.bitwise_and(frame, frame, mask=mask)
 
-    # make mask for red
-    mask = cv2.inRange(hsv, (h,s,v), REDUPPER)
-    mask = cv2.erode(mask, None, iterations=2)
-    mask = cv2.dilate(mask, None, iterations=2)
+    # find contours in mask
+    contours,hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        max_contour = max(contours, key=cv2.contourArea)
+        cv2.drawContours(frame, [max_contour], -1, (0,255,0), 3)
 
-    # get HSV at mouse location on click
+    # show HSV at target location
     if show_hsv:
-        tar_h = blurred.item(ix,iy,0)
-        tar_s = blurred.item(ix,iy,1)
-        tar_v = blurred.item(ix,iy,2)
+        tar_h = frame.item(iy,ix,0)
+        tar_s = frame.item(iy,ix,1)
+        tar_v = frame.item(iy,ix,2)
         show_hsv = False
 
-    hsv_str = f'H {tar_h}\nS {tar_s}\nV {tar_v}'
-    cv2.putText(blurred, hsv_str, (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0))
+    cv2.putText(frame, f'H:{tar_h} | S:{tar_s} | V:{tar_v}', (20,20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0))
 
-    # show image
-    cv2.imshow('blurred', blurred)
+    # show images and check for break
+    cv2.imshow('frame', frame)
     cv2.imshow('mask', mask)
+    cv2.imshow('res', res)
 
-    # HSV sliders
-    h = cv2.getTrackbarPos('H', 'mask')
-    s = cv2.getTrackbarPos('S (amt. of white)', 'mask')
-    v = cv2.getTrackbarPos('V (amt. of black)', 'mask')
-
-    # find contours
-    contours = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # find center of contour
-    if not contours:
-        continue
-
-    if cv2.waitKey(1) == 27:
+    k = cv2.waitKey(1)
+    if k == 27:
         break
+
+
+cv2.destroyAllWindows()
