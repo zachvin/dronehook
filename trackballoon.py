@@ -3,6 +3,10 @@
 import cv2
 import numpy as np
 
+# DEBUG OPTIONS
+debug_drawEnclosingCircle = False
+
+
 # CONSTANTS
 RED       = np.uint8([[[255,0,0]]])
 RED_HSV   = cv2.cvtColor(RED, cv2.COLOR_BGR2HSV)
@@ -48,6 +52,13 @@ while True:
     if contours:
         max_contour = max(contours, key=cv2.contourArea)
         cv2.drawContours(frame, [max_contour], -1, (0,255,0), 3)
+
+        if debug_drawEnclosingCircle:
+            (x,y),radius = cv2.minEnclosingCircle(max_contour)
+            center = (int(x), int(y))
+            radius = int(radius)
+
+            cv2.circle(frame, center, radius, (255,0,0),2)
 
     # show HSV at target location
     if show_hsv:
