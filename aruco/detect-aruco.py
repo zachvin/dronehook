@@ -67,5 +67,5 @@ while True:
   if k == 27:
     break
 
-cv.destroyAllWindows()
+cv2.destroyAllWindows()
 vs.stop()
