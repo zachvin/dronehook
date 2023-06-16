@@ -7,7 +7,6 @@ RED_HSV   = cv2.cvtColor(RED, cv2.COLOR_BGR2HSV)
 RED_UPPER = np.array([0, 100, 100])
 RED_LOWER = np.array([20, 255, 255])
 
-
 # start up camera
 cap = cv2.videoCapture(0)
 
