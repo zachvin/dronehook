@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
+
 import cv2
 from imutils.video import VideoStream
 import imutils
 import time
 
 # read image and wait for user input
-img = cv2.imread('aruco/markers/aruco-4x4-0.png')
+img = cv2.imread('./markers/aruco-4x4-0.png')
 
 cv2.imshow('Image', img)
 while True:
@@ -13,22 +15,34 @@ while True:
 
 # open video stream and wait for camera to start
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
-time.sleep(2.0)
+
+cap = cv2.VideoCapture(0)
+#vs = VideoStream().start()
+#time.sleep(2.0)
 
 # set aruco dictionary and parameters
+arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_50)
+arucoParams = cv2.aruco.DetectorParameters_create()
+
+
+# For updated API
+'''
 dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
 parameters =  cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+'''
 
 # start video loop
 while True:
 
   # get new webcam frame
-  frame = vs.read()
-  img = imutils.resize(frame, width=1000)
+  #frame = vs.read()
+  #img = imutils.resize(frame, width=1000)
+  ret, img = cap.read()
 
-  markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(img)
+  # for updated API
+  #markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(img)
+  (markerCorners, markerIds, rejectedCandidates) = cv2.aruco.detectMarkers(img, arucoDict,parameters=arucoParams)
 
   # show corners on image if found
   if markerCorners:
@@ -68,4 +82,5 @@ while True:
     break
 
 cv2.destroyAllWindows()
-vs.stop()
+cap.release()
+#vs.stop()
