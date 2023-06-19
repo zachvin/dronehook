@@ -2,10 +2,6 @@
 
 import cv2
 
-MAX_FRAMENUM = 14
-NUM_COLS =  4
-NUM_ROWS = 4
-
 SENSOR_ID   = 0
 CAP_WIDTH   = 1920
 CAP_HEIGHT  = 1080
