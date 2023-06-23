@@ -117,6 +117,7 @@ def calculate_orientation(frame, centers, draw_lines=True):
 
     
 
+#cap = build_pipeline(DISP_WIDTH=1920, DISP_HEIGHT=1080)
 cap = build_pipeline()
 detector = build_detector()
 
@@ -136,6 +137,8 @@ if cap.isOpened():
             # calculate orientation based on position of markers in frame
             if centers:
                 calculate_orientation(frame, centers)
+            else:
+                print('[INFO] No marker found')
 
             # detect if window was closed
             if cv2.getWindowProperty(window_name, cv2.WND_PROP_AUTOSIZE) >= 0:
