@@ -10,7 +10,7 @@ ENCA    = 21
 ENCB    = 23
 
 # global vars and constants
-ROT     = 15
+SINGLE_ROT_TIME = 1.68
 
 pos     = 0
 
@@ -47,21 +47,16 @@ try:
         x = input()
         if x == 'a':
             GPIO.output(DIR, 1)
-            target = pos + ROT
             pwm.ChangeDutyCycle(50)
-            print(f'[INFO] Target position {target} (current {pos})')
-            while pos < target:
-                pass
+            time.sleep(SINGLE_ROT_TIME)
             pwm.ChangeDutyCycle(0)
             print('[INFO] Target position reached')
         elif x == 'd':
             GPIO.output(DIR, 0)
-            target = pos - ROT
             pwm.ChangeDutyCycle(50)
-            print(f'[INFO] Target position {target} (current {pos})')
-            while pos > target:
-                pass
+            time.sleep(5 * SINGLE_ROT_TIME)
             pwm.ChangeDutyCycle(0)
+            print('[INFO] Target position reached')
         else:
             break
 
