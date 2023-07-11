@@ -4,10 +4,10 @@ import RPi.GPIO as GPIO
 import time
 
 # pin numbers
+DIR     = 31
 PWM     = 33
-DIR     = 24
-ENCA    = 21
-ENCB    = 23
+ENCB    = 35
+ENCA    = 37
 
 # map pins
 GPIO.setmode(GPIO.BOARD)
