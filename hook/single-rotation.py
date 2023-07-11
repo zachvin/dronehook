@@ -4,10 +4,10 @@ import RPi.GPIO as GPIO
 import time
 
 # pin numbers
+DIR     = 31 # prev: 24
 PWM     = 33
-DIR     = 24
-ENCA    = 21
-ENCB    = 23
+ENCB    = 35 # prev: 23
+ENCA    = 37 # prev: 21
 
 # global vars and constants
 SINGLE_ROT_TIME = 1.68
