@@ -17,10 +17,10 @@ def read_encoder(pin):
 
 
 # pin numbers
+DIR     = 31
 PWM     = 33
-DIR     = 24
-ENCA    = 21
-ENCB    = 23
+ENCB    = 35
+ENCA    = 37
 
 # global vars
 enca_data = []
