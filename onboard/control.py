@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 # Movement signal handling for Dronehook
-# Version 0.1
+# Version 0.5
 # Zach Vincent (zvincent@nd.edu)
-# 07-16-23
+# 07-17-23
 
 PWM_CENTER  = 1500
 PWM_RANGE   = 500
@@ -25,8 +25,8 @@ def set_rc_channel_pwm(connection, channel_id, pwm=1500):
         connection.target_component,             # target_component
         *rc_channel_values)                  # RC channel list, in microseconds.
     
-def calculate_pwm_linear(connection, err_x, err_y, w, h):
-    """ Calculate PWM values based on marker error
+def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
+    """ Calculate PWM values based on marker error and linear function
     Args:
         err_x (float): X error as ratio of half screen width
         err_y (float): Y error as ratio of half screen height
@@ -38,15 +38,22 @@ def calculate_pwm_linear(connection, err_x, err_y, w, h):
     # higher PWM value means down/right
     # lower PWM value means up/left
 
-    if err_x > 0:
-        pwm_x = PWM_CENTER - (err_x * PWM_RANGE)
-    else:
-        pwm_x = PWM_CENTER + (err_x * PWM_RANGE)
+    pwm_x = PWM_CENTER + (err_x * PWM_RANGE)
+    pwm_y = PWM_CENTER + (err_y * PWM_RANGE)
 
-    if err_y > 0:
-        pwm_y = PWM_CENTER - (err_y * PWM_RANGE)
-    else:
-        pwm_y = PWM_CENTER + (err_y * PWM_RANGE)
+    set_rc_channel_pwm(connection, 1, pwm_x)
+    set_rc_channel_pwm(connection, 2, pwm_y)
+
+
+def calculate_pwm_cubic(connection, err_x:float, err_y:float) -> None:
+    """ Calculate PWM values based on marker error and x^3 function
+    Args:
+        err_x (float): X error as ratio of half screen width
+        err_y (float): Y error as ratio of half screen height
+    """
+
+    pwm_x = PWM_CENTER + (pow(err_x, 3) * PWM_RANGE)
+    pwm_y = PWM_CENTER + (pow(err_y, 3) * PWM_RANGE)
 
     set_rc_channel_pwm(connection, 1, pwm_x)
     set_rc_channel_pwm(connection, 2, pwm_y)

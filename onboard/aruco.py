@@ -7,6 +7,7 @@
 
 import cv2
 import time
+import control
 
 
 # set up sensor and build pipeline to import photo to file
@@ -146,7 +147,8 @@ def start_control(connection, display_frame = False):
 
                 # calculate orientation based on position of markers in frame
                 if centers:
-                    calculate_error(frame, centers)
+                    err_x, err_y = calculate_error(frame, centers)
+                    control.calculate_pwm_linear(connection, err_x, err_y)
                 else:
                     print('[INFO] No marker found')
 
