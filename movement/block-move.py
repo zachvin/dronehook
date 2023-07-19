@@ -64,7 +64,7 @@ from pymavlink import mavutil
 import time
 
 # Start a connection listening to a UDP port
-connection = mavutil.mavlink_connection('udpin:localhost:14551')
+connection = mavutil.mavlink_connection('/dev/ttyACM0')
 
 # Wait for the first heartbeat
 #   This sets the system and component ID of remote system for the link
@@ -95,15 +95,15 @@ def set_rc_channel_pwm(channel_id, pwm=1500):
 
 # set roll (channel 1)
 print('Setting roll:')
-set_rc_channel_pwm(1, 1000)
-print('Succ')
+set_rc_channel_pwm(1, 1200)
+print('Success')
 
 time.sleep(2)
 
 print('Setting reroll')
 # now set it chonky style
-set_rc_channel_pwm(1, 2000)
-print('Succ')
+set_rc_channel_pwm(1, 1800)
+print('Success')
 
 while 1:
     msg = connection.recv_match(

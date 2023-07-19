@@ -5,7 +5,7 @@ import cv2
 import time
 
 # start connection
-connection = mavutil.mavlink_connection('udpin:localhost:14551')
+connection = mavutil.mavlink_connection('/dev/ttyACM0')
 
 def set_rc_channel_pwm(channel_id, pwm=1500):
     """ Set RC channel pwm value
