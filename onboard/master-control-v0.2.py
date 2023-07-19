@@ -47,8 +47,5 @@ print(msg)
 aruco.start_control()
 
 
-
-while 1:
-    msg = connection.recv_match(
-        type='LOCAL_POSITION_NED', blocking=True)
-    print(msg)
+# CLEAN UP
+print('[INFO] Ending master control')
