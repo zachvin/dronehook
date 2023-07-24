@@ -157,7 +157,7 @@ def start_control(connection, display_frame = False):
                 if centers:
                     recognition_moving_average.append(1)
 
-                    if sum(recognition_moving_average > 3):
+                    if sum(recognition_moving_average) > 3:
                         err_x, err_y = calculate_error(frame, centers)
                         err_x_total.append(err_x)
                         err_y_total.append(err_y)
