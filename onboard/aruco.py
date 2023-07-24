@@ -130,6 +130,12 @@ def calculate_error(frame, centers, draw_lines=True):
     return x_err, y_err
 
 def start_control(connection, display_frame = False):
+    """
+    Oversee main control of the plane with image recognition input.
+    Args:
+        connection: Ardupilot connection of Jetson to Cube
+        display_frame (bool, optional): Display camera preview as code runs
+    """
     err_x_total = []
     err_y_total = []
 
@@ -138,7 +144,7 @@ def start_control(connection, display_frame = False):
     cap = build_pipeline()
     detector = build_detector()
 
-    window_name = 'Frame'
+    window_name = 'PiCam'
     
     if cap.isOpened():
         num = 0
@@ -185,8 +191,6 @@ def start_control(connection, display_frame = False):
             cap.release()
             cv2.destroyAllWindows()
             plt.show()
-            print(err_x_total)
-            print(err_y_total)
 
     else:
         print('[ERROR]: Unable to open camera')
