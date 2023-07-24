@@ -10,6 +10,11 @@ import time
 import control
 import matplotlib.pyplot as plt
 
+PWM_MODES = {
+    0: control.calculate_pwm_linear,
+    1: control.calculate_pwm_parabolic,
+}
+
 
 # set up sensor and build pipeline to import photo to file
 def build_pipeline(SENSOR_ID = 0, 
@@ -129,11 +134,12 @@ def calculate_error(frame, centers, draw_lines=True):
     # return directions
     return x_err, y_err
 
-def start_control(connection, display_frame = False):
+def start_control(connection, pwm_mode = 0, display_frame = False):
     """
     Oversee main control of the plane with image recognition input.
     Args:
         connection: Ardupilot connection of Jetson to Cube
+        pwm_mode (int, optional): PWM calculation mode (0: linear, 1: parabolic)
         display_frame (bool, optional): Display camera preview as code runs
     """
     err_x_total = []
