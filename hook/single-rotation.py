@@ -10,7 +10,7 @@ ENCB    = 35 # prev: 23
 ENCA    = 37 # prev: 21
 
 # global vars and constants
-SINGLE_ROT_TIME = 1.68
+SINGLE_ROT_TIME = 0.3 # prev: 1.68
 
 pos     = 0
 
