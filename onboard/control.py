@@ -6,7 +6,7 @@
 # 07-17-23
 
 PWM_CENTER  = 1500
-PWM_RANGE   = 500
+PWM_RANGE   = 300
 
 
 

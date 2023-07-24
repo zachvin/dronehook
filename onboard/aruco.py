@@ -133,6 +133,8 @@ def start_control(connection, display_frame = False):
     err_x_total = []
     err_y_total = []
 
+    recognition_moving_average = [0, 0, 0, 0, 0]
+
     cap = build_pipeline()
     detector = build_detector()
 
@@ -151,12 +153,17 @@ def start_control(connection, display_frame = False):
                 centers = detect_aruco(frame, detector)
 
                 # calculate orientation based on position of markers in frame
+                recognition_moving_average.pop(0)
                 if centers:
-                    err_x, err_y = calculate_error(frame, centers)
-                    err_x_total.append(err_x)
-                    err_y_total.append(err_y)
-                    control.calculate_pwm_linear(connection, err_x, err_y)
+                    recognition_moving_average.append(1)
+
+                    if sum(recognition_moving_average > 3):
+                        err_x, err_y = calculate_error(frame, centers)
+                        err_x_total.append(err_x)
+                        err_y_total.append(err_y)
+                        control.calculate_pwm_linear(connection, err_x, err_y)
                 else:
+                    recognition_moving_average.append(0)
                     print('[INFO] No marker found')
 
                 # detect if window is still open
@@ -178,6 +185,8 @@ def start_control(connection, display_frame = False):
             cap.release()
             cv2.destroyAllWindows()
             plt.show()
+            print(err_x_total)
+            print(err_y_total)
 
     else:
         print('[ERROR]: Unable to open camera')
