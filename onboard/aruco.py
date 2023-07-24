@@ -136,8 +136,7 @@ def start_control(connection, display_frame = False):
     cap = build_pipeline()
     detector = build_detector()
 
-    if display_frame:
-        window_name = 'Frame'
+    window_name = 'Frame'
     
     if cap.isOpened():
         num = 0
