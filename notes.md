@@ -1,11 +1,24 @@
 # File description
-This file follows all my work in learning/understanding ArduPilot, specifically programming it with pymavlink.
+This file follows all software/electrical work in building and understanding Dronehook.
 
-# Translating from [MAVLink docs](https://mavlink.io/en/messages/common.html) to [pymavlink docs](https://mavlink.io/en/mavgen_python/)
-MAVLink is a *protocol* which dictates the structure of messages sent over radio from the ground station computer or via USB from the onboard companion computer to the flight controller (FCU). pymavlink is a *code library* that allows you to use Python to write messages to the FCU according to the MAVLink protocol.
-The MAVLink docs show a lot of different commands, but it is not immediately clear how to implement them in code. This is because we must look to pymavlink to understand how to structure our code. pymavlink code will include commands for us to write messages to the FCU via MAVLink, and it is at that point that we must look at the MAVLink docs to understand how to structure the messages. For now, let's take a look at how to write commands with pymavlink.
-The general rule of thumb is that anything you find in the MAVLink docs is written in pymavlink in all lowercase with an extra word or two appended to it. See directly below for an example.
+# Electronics
+## NVIDIA Jetson pinout description
 
-### MAVLink message
-Some MAVLink messages are sent as *commands*. In the MAVLink docs, they are denoted by `MAV_CMD`. These commands are sent as type `COMMAND_INT` or `COMMAND_LONG` message. In pymavlink, this is done by writing the command in lowercase and appending `_send`, i.e. `the_connection.mav.command_int_send()`.
+| Pin | Desc | Purpose |
+| --- | --- | --- |
+| 39 | GND
+| 37 | GPIO | Encoder A |
+| 35 | GPIO | Encoder B |
+| 33 | PWM | Motor speed |
+| 31 | GPIO | Motor direction |
+| 20 | GND
+| 17 | 3.3V | Logic power
 
+Most of the IO pins are physically next to each other on the board. This is intentional and for the purpose of combining the connecting jumper cables with heat shrink to make a single connector. Pins 20 and 17 are diagonal to one another and form another connector using an extra two blank cables. Detailed information on the motor driver connections can be found [here](https://www.pololu.com/product/2960/pictures).
+
+# Software
+## Explanation of file structure
+The Dronehook repository contains all the test and final onboard files. The test files are split into folders according to their function on the plane and the final files are in the `onboard` folder.
+
+## Control flow
+Dronehook uses `pymavlink` (but not `dronekit-python`). The master code runs on the onboard companion computer (a NVIDIA Jetson Nano) and creates a software connection via USB to the flight controller. Upon successful connection, the code then arms the plane and takes off autonomously. The drone then flies to a GPS location that we set manually (this will be automated in the future) and then flies to the GPS location of the Package Retrieval Station (PRS). On this leg of the mission the camera starts up and Dronehook starts looking for the ArUco marker.
