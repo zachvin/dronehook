@@ -40,8 +40,8 @@ def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
     # higher PWM value means up/right
     # lower PWM value means down/left
 
-    pwm_x = PWM_CENTER + (err_x * PWM_RANGE)
-    pwm_y = PWM_CENTER + (err_y * PWM_RANGE)
+    pwm_x = int(PWM_CENTER + (err_x * PWM_RANGE))
+    pwm_y = int(PWM_CENTER + (err_y * PWM_RANGE))
 
     set_rc_channel_pwm(connection, 1, pwm_x)
     set_rc_channel_pwm(connection, 2, pwm_y)
