@@ -136,14 +136,15 @@ def start_control(connection, display_frame = False):
     cap = build_pipeline()
     detector = build_detector()
 
-    window_name = 'Frame'
+    if display_frame:
+        window_name = 'Frame'
+    
     if cap.isOpened():
         num = 0
 
         try:
             window = cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
             while True:
-                print('Checkpoint 1')
                 # get new frame
                 ret, frame = cap.read()
 
@@ -177,6 +178,7 @@ def start_control(connection, display_frame = False):
             plt.plot(err_x_total, err_y_total)
             cap.release()
             cv2.destroyAllWindows()
+            plt.show()
 
     else:
         print('[ERROR]: Unable to open camera')

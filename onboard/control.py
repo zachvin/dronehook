@@ -40,9 +40,28 @@ def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
     # higher PWM value means up/right
     # lower PWM value means down/left
 
-    pwm_x = int(PWM_CENTER + (err_x * PWM_RANGE))
-    pwm_y = int(PWM_CENTER + (err_y * PWM_RANGE))
+    # err_x < 0     higher roll PWM
+    # err_x > 0     lower roll PWM
+    # err_y < 0     lower pitch PWM
+    # err_y > 0     higher pitch PWM
 
+    # how much PWM value will change from center
+    delta_x = int(abs(err_x * PWM_RANGE))
+    delta_y = int(abs(err_y * PWM_RANGE))
+
+    # determine actual PWM
+    pwm_x = pwm_y = PWM_CENTER
+    if err_x < 0:
+        pwm_x = PWM_CENTER + delta_x
+    else:
+        pwm_x = PWM_CENTER - delta_x
+
+    if err_y < 0:
+        pwm_y = PWM_CENTER - delta_y
+    else:
+        pwm_y = PWM_CENTER - delta_y
+
+    # set PWM
     set_rc_channel_pwm(connection, 1, pwm_x)
     set_rc_channel_pwm(connection, 2, pwm_y)
 
