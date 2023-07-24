@@ -18,7 +18,7 @@ print("Heartbeat from system (system %u component %u)" %
       (connection.target_system, connection.target_component))
 
 # START ARUCO CONTROL LOOP
-aruco.start_control(connection, True)
+aruco.start_control(connection)
 
 # CLEAN UP
 print('[INFO] Ending testbench')

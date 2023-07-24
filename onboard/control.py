@@ -6,8 +6,8 @@
 # 07-17-23
 
 PWM_CENTER  = 1500
-PWM_RANGE   = 300
-
+PWM_RANGE_X = 300
+PWM_RANGE_Y = 400
 
 
 def set_rc_channel_pwm(connection, channel_id, pwm=1500):
@@ -27,13 +27,8 @@ def set_rc_channel_pwm(connection, channel_id, pwm=1500):
         connection.target_component,             # target_component
         *rc_channel_values)                  # RC channel list, in microseconds.
     
-def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
-    """ Calculate PWM values based on marker error and linear function
-    Args:
-        err_x (float): X error as ratio of half screen width
-        err_y (float): Y error as ratio of half screen height
-    """
 
+def get_pwm(err_x:float, err_y:float, delta_x:int, delta_y:int) -> int:
     # error > 0 means plane must move up/left
     # error < 0 means plane must move down/right
 
@@ -44,10 +39,6 @@ def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
     # err_x > 0     lower roll PWM
     # err_y < 0     lower pitch PWM
     # err_y > 0     higher pitch PWM
-
-    # how much PWM value will change from center
-    delta_x = int(abs(err_x * PWM_RANGE))
-    delta_y = int(abs(err_y * PWM_RANGE))
 
     # determine actual PWM
     pwm_x = pwm_y = PWM_CENTER
@@ -61,20 +52,43 @@ def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
     else:
         pwm_y = PWM_CENTER - delta_y
 
+    return pwm_x, pwm_y
+    
+def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
+    """ Calculate PWM values based on marker error and linear function
+    Args:
+        connection: Jetson to Ardupilot on Cube connection
+        err_x (float): X error as ratio of half screen width
+        err_y (float): Y error as ratio of half screen height
+    """
+
+    # how much PWM value will change from center
+    delta_x = int(abs(err_x * PWM_RANGE_X))
+    delta_y = int(abs(err_y * PWM_RANGE_Y))
+
+    # get target PWM values
+    pwm_x, pwm_y = get_pwm(err_x, err_y, delta_x, delta_y)
+    
     # set PWM
     set_rc_channel_pwm(connection, 1, pwm_x)
     set_rc_channel_pwm(connection, 2, pwm_y)
 
 
-def calculate_pwm_cubic(connection, err_x:float, err_y:float) -> None:
-    """ Calculate PWM values based on marker error and x^3 function
+def calculate_pwm_parabolic(connection, err_x:float, err_y:float) -> None:
+    """ Calculate PWM values based on marker error and x^2 function
     Args:
+        connection: Jetson to Ardupilot on Cube connection
         err_x (float): X error as ratio of half screen width
         err_y (float): Y error as ratio of half screen height
     """
 
-    pwm_x = PWM_CENTER + (pow(err_x, 3) * PWM_RANGE)
-    pwm_y = PWM_CENTER + (pow(err_y, 3) * PWM_RANGE)
+    # how much PWM value will change from center
+    delta_x = pow(err_x, 2) * PWM_RANGE_X
+    delta_y = pow(err_y, 2) * PWM_RANGE_Y
 
+    # get target PWM values
+    pwm_x, pwm_y = get_pwm(err_x, err_y, delta_x, delta_y)
+
+    # set PWM
     set_rc_channel_pwm(connection, 1, pwm_x)
     set_rc_channel_pwm(connection, 2, pwm_y)
