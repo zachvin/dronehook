@@ -8,6 +8,7 @@
 import cv2
 import time
 import control
+import matplotlib.pyplot as plt
 
 
 # set up sensor and build pipeline to import photo to file
@@ -129,6 +130,9 @@ def calculate_error(frame, centers, draw_lines=True):
     return x_err, y_err
 
 def start_control(connection, display_frame = False):
+    err_x_total = []
+    err_y_total = []
+
     cap = build_pipeline()
     detector = build_detector()
 
@@ -148,6 +152,8 @@ def start_control(connection, display_frame = False):
                 # calculate orientation based on position of markers in frame
                 if centers:
                     err_x, err_y = calculate_error(frame, centers)
+                    err_x_total.append(err_x)
+                    err_y_total.append(err_y)
                     control.calculate_pwm_linear(connection, err_x, err_y)
                 else:
                     print('[INFO] No marker found')
@@ -165,6 +171,7 @@ def start_control(connection, display_frame = False):
                     break
         
         finally:
+            plt.plot(err_x_total, err_y_total)
             cap.release()
             cv2.destroyAllWindows()
 
