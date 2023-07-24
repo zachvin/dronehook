@@ -8,6 +8,8 @@
 PWM_CENTER  = 1500
 PWM_RANGE   = 500
 
+
+
 def set_rc_channel_pwm(connection, channel_id, pwm=1500):
     """ Set RC channel pwm value
     Args:
@@ -35,8 +37,8 @@ def calculate_pwm_linear(connection, err_x:float, err_y:float) -> None:
     # error > 0 means plane must move up/left
     # error < 0 means plane must move down/right
 
-    # higher PWM value means down/right
-    # lower PWM value means up/left
+    # higher PWM value means up/right
+    # lower PWM value means down/left
 
     pwm_x = PWM_CENTER + (err_x * PWM_RANGE)
     pwm_y = PWM_CENTER + (err_y * PWM_RANGE)

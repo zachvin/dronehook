@@ -143,6 +143,7 @@ def start_control(connection, display_frame = False):
         try:
             window = cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
             while True:
+                print('Checkpoint 1')
                 # get new frame
                 ret, frame = cap.read()
 
@@ -159,15 +160,17 @@ def start_control(connection, display_frame = False):
                     print('[INFO] No marker found')
 
                 # detect if window is still open
-                if display_frame and cv2.getWindowProperty(window_name,
-                                                           cv2.WND_PROP_AUTOSIZE) >= 0:
-                    cv2.imshow(window_name, frame)
-                else:
-                    break
+                if display_frame:
+                    if cv2.getWindowProperty(window_name,
+                                                            cv2.WND_PROP_AUTOSIZE) >= 0:
+                        cv2.imshow(window_name, frame)
+                    else:
+                        break
 
                 # stop if ESC or Q pressed
                 k = cv2.waitKey(10) & 0xFF
                 if k == 27 or k == ord('q'):
+                    print('[INFO] Quitting...')
                     break
         
         finally:
