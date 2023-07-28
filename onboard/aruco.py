@@ -153,12 +153,12 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
     window_name = 'PiCam'
 
     framerates = []
+    times = []
 
     if cap.isOpened():
-        num = 0
-
         try:
             window = cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+            graph_start_time = time.time()
             while True:
 
                 start_time = time.time()
@@ -198,6 +198,7 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
                     break
 
                 fps = 1.0/(time.time() - start_time)
+                times.append(time.time() - graph_start_time)
                 framerates.append(fps)
                 print(f'[FPS]\t {fps:.2f}')
         
@@ -206,9 +207,9 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
             axis[0,0].plot(err_x_total, err_y_total)
             axis[0,0].set_title('Error')
 
-            axis[0,1].plot(framerates)
+            axis[0,1].plot(times, framerates)
             axis[0,1].set_title('Framerates')
-            
+
             cap.release()
             cv2.destroyAllWindows()
             plt.show()
