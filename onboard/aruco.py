@@ -154,6 +154,7 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
 
     framerates = []
     times = []
+    recognitions = []
 
     if cap.isOpened():
         try:
@@ -197,18 +198,28 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
                     print('[INFO] Quitting...')
                     break
 
+                # plotting data
                 fps = 1.0/(time.time() - start_time)
+
+                # 1 if marker was recognized in last frame; 0 if not
+                recognitions.append(recognition_moving_average[-1])
+
                 times.append(time.time() - graph_start_time)
                 framerates.append(fps)
                 print(f'[FPS]\t {fps:.2f}')
         
         finally:
             figure, axis = plt.subplots(1, 2)
-            axis[0].plot(err_x_total, err_y_total)
-            axis[0].set_title('Error')
+            axis[0].plot(err_x_total, err_y_total, label='Distance')
+            axis[0].set_title('Distance of marker from center of frame')
+            axis[0].xlabel('X distance')
+            axis[0].ylabel('Y distance')
 
-            axis[1].plot(times, framerates)
+            axis[1].plot(times, framerates, label='Framerate')
+            axis[1].plot(times, recognitions, label='Recognized?')
             axis[1].set_title('Framerates')
+            axis[1].xlabel('Time (s)')
+            axis[1].ylabel('Number of frames')
 
             cap.release()
             cv2.destroyAllWindows()
