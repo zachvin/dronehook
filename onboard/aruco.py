@@ -151,7 +151,9 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
     detector = build_detector()
 
     window_name = 'PiCam'
-    
+
+    framerates = []
+
     if cap.isOpened():
         num = 0
 
@@ -195,10 +197,18 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
                     print('[INFO] Quitting...')
                     break
 
-                print(f'[FPS]\t {1.0/(time.time() - start_time):.2f}')
+                fps = 1.0/(time.time() - start_time)
+                framerates.append(fps)
+                print(f'[FPS]\t {fps:.2f}')
         
         finally:
-            plt.plot(err_x_total, err_y_total)
+            figure, axis = plt.subplots(1, 2)
+            axis[0,0].plot(err_x_total, err_y_total)
+            axis[0,0].set_title('Error')
+
+            axis[0,1].plot(framerates)
+            axis[0,1].set_title('Framerates')
+            
             cap.release()
             cv2.destroyAllWindows()
             plt.show()
