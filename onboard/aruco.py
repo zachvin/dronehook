@@ -204,11 +204,11 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
         
         finally:
             figure, axis = plt.subplots(1, 2)
-            axis[0,0].plot(err_x_total, err_y_total)
-            axis[0,0].set_title('Error')
+            axis[0].plot(err_x_total, err_y_total)
+            axis[0].set_title('Error')
 
-            axis[0,1].plot(times, framerates)
-            axis[0,1].set_title('Framerates')
+            axis[1].plot(times, framerates)
+            axis[1].set_title('Framerates')
 
             cap.release()
             cv2.destroyAllWindows()
