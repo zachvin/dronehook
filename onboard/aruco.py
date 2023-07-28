@@ -212,14 +212,12 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
             figure, axis = plt.subplots(1, 2)
             axis[0].plot(err_x_total, err_y_total, label='Distance')
             axis[0].set_title('Distance of marker from center of frame')
-            axis[0].xlabel('X distance')
-            axis[0].ylabel('Y distance')
+            axis[0].set(xlabel='X distance', ylabel='Y distance')
 
             axis[1].plot(times, framerates, label='Framerate')
             axis[1].plot(times, recognitions, label='Recognized?')
             axis[1].set_title('Framerates')
-            axis[1].xlabel('Time (s)')
-            axis[1].ylabel('Number of frames')
+            axis[1].set(xlabel='Time (s)', ylabel='Number of frames')
 
             cap.release()
             cv2.destroyAllWindows()
