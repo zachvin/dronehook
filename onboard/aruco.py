@@ -71,8 +71,8 @@ def detect_aruco(frame,
                             (top_left[0], top_left[1] - 15),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-            if log:
-                print("[INFO] ArUco marker ID: {}".format(marker_id))
+            #if log:
+            #    print("[INFO] ArUco marker ID: {}".format(marker_id))
 
     return centers
 
@@ -170,7 +170,7 @@ def start_control(connection, display_frame = False):
                         control.calculate_pwm_linear(connection, err_x, err_y)
                 else:
                     recognition_moving_average.append(0)
-                    print('[INFO] No marker found')
+                    #print('[INFO] No marker found')
 
                 # detect if window is still open
                 if display_frame:
