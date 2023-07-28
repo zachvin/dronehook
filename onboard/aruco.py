@@ -158,6 +158,9 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
         try:
             window = cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
             while True:
+
+                start_time = time.time()
+
                 # get new frame
                 ret, frame = cap.read()
 
@@ -191,6 +194,8 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
                 if k == 27 or k == ord('q'):
                     print('[INFO] Quitting...')
                     break
+
+                print(f'[FPS]\t {1.0/(time.time() - start_time):.2f}')
         
         finally:
             plt.plot(err_x_total, err_y_total)
