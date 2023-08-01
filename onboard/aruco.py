@@ -148,7 +148,7 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
     recognition_moving_average = [0, 0, 0, 0, 0]
 
     #cap = build_pipeline()
-    cap = cv2.VideoCapture(0)
+    cap = build_pipeline()
     detector = build_detector()
 
     window_name = 'PiCam'
@@ -168,9 +168,6 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
                 # get new frame
                 ret, frame = cap.read()
 
-                if not ret:
-                    continue
-                
                 # detect aruco markers
                 centers = detect_aruco(frame, detector)
 
