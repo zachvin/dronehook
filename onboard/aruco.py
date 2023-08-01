@@ -168,6 +168,9 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
                 # get new frame
                 ret, frame = cap.read()
 
+                if not ret:
+                    continue
+                
                 # detect aruco markers
                 centers = detect_aruco(frame, detector)
 
