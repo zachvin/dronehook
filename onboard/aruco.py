@@ -147,7 +147,8 @@ def start_control(connection, pwm_mode = 0, display_frame = False):
 
     recognition_moving_average = [0, 0, 0, 0, 0]
 
-    cap = build_pipeline()
+    #cap = build_pipeline()
+    cap = cv2.VideoCapture(0)
     detector = build_detector()
 
     window_name = 'PiCam'
